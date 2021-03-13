@@ -23,4 +23,4 @@ default_path = '/dev/null'
 ```
 `name` name used with rconf (`rconf <name>`). the executable name (vim/nvim) is used in the example config.  
 `path` path to the config file.  
-`default_path` (*unimplemented*) path to an example config to use when the `path` file is missing.
+`default_path` (*unimplemented*) path to an example config to use when the `path` file is missing, `/dev/null` if there is no example available
