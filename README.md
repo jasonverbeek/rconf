@@ -19,7 +19,7 @@ Currently the config file contains 2 examples (vim, nvim). you can add your own 
 [[ config ]]
 name = 'qtile'
 path = '~/.config/qtile/config.py'
-default_path = '/dev/null'
+default_path = '/usr/share/doc/qtile/default_config.py'
 ```
 `name` name used with rconf (`rconf <name>`). the executable name (vim/nvim) is used in the example config.  
 `path` path to the config file.  
