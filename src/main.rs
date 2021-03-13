@@ -1,6 +1,7 @@
 use serde::{Serialize, Deserialize};
 use std::env;
 use shellexpand::tilde;
+use std::path::Path;
 
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -46,6 +47,9 @@ fn main() {
     match cfg.config.iter().find(|x| &x.name == target) {
         Some(result) => {
             let config_file = tilde(&result.path).into_owned();
+            if !Path::new(&config_file).exists() && (result.default_path != "/dev/null" || result.default_path != "") {
+                println!("{:#?}", std::fs::copy(&result.default_path, &config_file))
+            }
             std::process::Command::new(&cfg.editor).arg(config_file).status().expect("error");
         },
         None => println!("config not found for '{}' in ~/.config/rconf/rconf.toml", target),
