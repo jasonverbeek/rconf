@@ -48,7 +48,10 @@ fn main() {
         Some(result) => {
             let config_file = tilde(&result.path).into_owned();
             if !Path::new(&config_file).exists() && (result.default_path != "/dev/null" || result.default_path != "") {
-                println!("{:#?}", std::fs::copy(&result.default_path, &config_file))
+                match std::fs::copy(&result.default_path, &config_file) {
+                    Ok(_) => {},
+                    Err(_) => {},
+                }
             }
             std::process::Command::new(&cfg.editor).arg(config_file).status().expect("error");
         },
