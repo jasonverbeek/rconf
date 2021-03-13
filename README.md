@@ -8,13 +8,26 @@ Helper for modifying system configs by mapping a name/key to the config path.
 Will open the nvim config file in the configured editor (vim by default).
 
 ## Installation
-Will soon be on the AUR and maybe other distros.
 
-For now checkout and `cargo build --release` to build the binary to `target/release/rconf`
+### Archlinux
 
-The binary can then be placed in `~/.local/bin/`
+You can install rconf using your prefered AUR Helper
 
-Make sure `~/.local/bin/` is on your `$PATH`
+`~ > paru -S rconf`
+
+### Other Distros
+
+I might add support for other distros later
+
+### Manual
+
+To build rconf you need `cargo` installed.
+
+- Clone rconf `git clone git@github.com:jasonverbeek/rconf.git`
+- cd to the repo `cd rconf`
+- Build using cargo `cargo build --release`
+- Move result to `~/.local/bin/` `mkdir -p ~/.local/bin/ && mv target/release/rconf ~/.local/bin/`
+- Make sure `~/.local/bin/` is on your `$PATH`
 
 ## Configuration
 After running `rconf` once you can find a configuration file at `~/.config/rconf/rconf.toml`
