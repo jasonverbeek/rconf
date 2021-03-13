@@ -10,7 +10,7 @@ Will open the nvim config file in the configured editor (vim by default).
 Will soon be on the AUR and maybe other distros.  
 For now checkout and `cargo build --release` to build the binary to `target/release/rconf`  
 The binary can then be placed in `~/.local/bin/`  
-Make sure `~/.local/bin/` in on your `$PATH`  
+Make sure `~/.local/bin/` is on your `$PATH`  
 
 ## Configuration
 After running `rconf` once you can find a configuration file at `~/.config/rconf/rconf.toml`  
