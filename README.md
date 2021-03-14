@@ -11,13 +11,13 @@ Will open the nvim config file in the configured editor (vim by default).
 
 ### Archlinux
 
-You can install rconf using your prefered AUR Helper
+You can install rconf using your preferred AUR Helper
 
 `~ > paru -S rconf`
 
 ### Other Distros
 
-I might add support for other distros later
+I might add support for other distros later, for now use manual installation on other distros
 
 ### Manual
 
