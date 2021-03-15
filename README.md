@@ -1,6 +1,7 @@
 # rconf
 
 Helper for modifying system configs by mapping a name/key to the config path.
+Can also use default/example configs when the original config file doesn't exist yet.
 
 ## Example
 ```~ > rconf nvim```
