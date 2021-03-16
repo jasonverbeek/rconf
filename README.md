@@ -9,6 +9,10 @@ Can also use default/example configs when the original config file doesn't exist
 
 Will open the nvim config file in the configured editor (vim by default).
 
+And the following will open the rconf config using rconf for ease of use in cross platform
+
+`~ > rconf rconf`
+
 ## Installation
 
 ### Archlinux
@@ -47,3 +51,12 @@ default_path = '/usr/share/doc/qtile/default_config.py'
 
 `default_path` default_path will be copied when the `path` file is missing. This can be used to point to example configurations. Use `'/dev/null'` or `''` if there is no example available
 
+----
+
+Default location for configs:
+
+GNU/Linux `~/.config/rconf/rconf.toml`
+
+MacOS `~/Library/Preferences/rs.rconf/rconf.toml`
+
+Windows `%AppData%` somewhere *(untested)*
