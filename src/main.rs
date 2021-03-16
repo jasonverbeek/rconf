@@ -21,7 +21,7 @@ fn get_config_path() -> String {
     // rs , , rconf arguments taken from confy source since confy doesn't allow you to get a path var
     if let Some(proj_dirs) = ProjectDirs::from("rs", "", "rconf") {
         if let Some(config_dir) = proj_dirs.config_dir().to_str() {
-            config_dir.to_string()
+            format!("{}/rconf.toml", config_dir.to_string())
         } else {
             String::from("")
         }
