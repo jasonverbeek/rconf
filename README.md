@@ -1,4 +1,4 @@
-# rconf
+# rconf v1.1.0
 
 Helper for modifying system configs by mapping a name/key to the config path.
 
