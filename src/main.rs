@@ -2,6 +2,7 @@ use serde::{Serialize, Deserialize};
 use std::env;
 use shellexpand::tilde;
 use std::path::Path;
+use directories_next::ProjectDirs;
 
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -17,6 +18,19 @@ struct Configuration {
     pub config: Vec<ConfigurableItem>
 }
 
+fn get_config_path() -> String {
+    // rs , , rconf arguments taken from confy source since confy doesn't allow you to get a path var
+    if let Some(proj_dirs) = ProjectDirs::from("rs", "", "rconf") {
+        if let Some(config_dir) = proj_dirs.config_dir().to_str() {
+            config_dir.to_string()
+        } else {
+            String::from("")
+        }
+    } else {
+        String::from("")
+    }
+}
+
 impl ::std::default::Default for Configuration {
     fn default() -> Self { Self {
         editor: String::from("vim"),
@@ -30,7 +44,12 @@ impl ::std::default::Default for Configuration {
                 name: String::from("vim"),
                 path: String::from("~/.vimrc"),
                 default_path: String::from("/dev/null"),
-            }
+            },
+            ConfigurableItem {
+                name: String::from("rconf"),
+                path: get_config_path(),
+                default_path: String::from("/dev/null"),
+            },
         ]
     }}
 }
@@ -39,7 +58,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
         println!("Usage: rconf <name>");
-        println!("Add more configs in ~/.config/rconf/rconf.toml");
+        println!("Add more configs in {}", get_config_path());
         std::process::exit(1);
     }
     let target = &args[1];
