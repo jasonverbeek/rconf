@@ -1,7 +1,7 @@
-use directories::ProjectDirs;
+use clap::{App, Arg};
+use directories_next::ProjectDirs;
 use serde::{Deserialize, Serialize};
 use shellexpand::tilde;
-use std::env;
 use std::path::Path;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -15,19 +15,6 @@ struct ConfigurableItem {
 struct Configuration {
     pub editor: String,
     pub config: Vec<ConfigurableItem>,
-}
-
-fn get_config_path() -> String {
-    // rs , , rconf arguments taken from confy source since confy doesn't allow you to get a path var
-    if let Some(proj_dirs) = ProjectDirs::from("rs", "", "rconf") {
-        if let Some(config_dir) = proj_dirs.config_dir().to_str() {
-            format!("{}/rconf.toml", config_dir.to_string())
-        } else {
-            String::from("")
-        }
-    } else {
-        String::from("")
-    }
 }
 
 impl ::std::default::Default for Configuration {
@@ -47,7 +34,7 @@ impl ::std::default::Default for Configuration {
                 },
                 ConfigurableItem {
                     name: String::from("rconf"),
-                    path: get_config_path(),
+                    path: _get_config_file().unwrap_or(String::from("./rconf.ini")),
                     default_path: String::from("/dev/null"),
                 },
             ],
@@ -55,34 +42,80 @@ impl ::std::default::Default for Configuration {
     }
 }
 
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    if args.len() != 2 {
-        println!("Usage: rconf <name>");
-        println!("Add more configs in {}", get_config_path());
-        std::process::exit(1);
+fn _get_config_file() -> std::option::Option<String> {
+    Some(
+        Path::new(
+            ProjectDirs::from("rs", "", "rconf")?
+                .config_dir()
+                .to_str()?,
+        )
+        .join("rconf.toml")
+        .to_str()?
+        .to_owned(),
+    )
+}
+
+fn get_config_path(matches: &clap::ArgMatches) -> std::option::Option<String> {
+    if let Some(config_dir) = matches.value_of("config") {
+        Some(config_dir.to_owned())
+    } else {
+        _get_config_file()
     }
-    let target = &args[1];
-    let cfg: Configuration = confy::load("rconf").unwrap();
-    match cfg.config.iter().find(|x| &x.name == target) {
-        Some(result) => {
-            let config_file = tilde(&result.path).into_owned();
-            if !Path::new(&config_file).exists()
-                && (result.default_path != "/dev/null" || result.default_path != "")
-            {
-                match std::fs::copy(&result.default_path, &config_file) {
-                    Ok(_) => {}
-                    Err(_) => {}
+}
+
+fn main() -> std::io::Result<()> {
+    let matches: clap::ArgMatches = App::new("rconf")
+        .version("2.0.0")
+        .author("Jason Verbeek <jason@localhost8080.org>")
+        .about("CLI utility to quickly access config file")
+        .arg(
+            Arg::with_name("name")
+                .help("name to query the config file")
+                .required(true),
+        )
+        .arg(
+            Arg::with_name("print")
+                .short("p")
+                .long("print")
+                .help("Print path to config instead of opening the file"),
+        )
+        .arg(
+            Arg::with_name("config")
+                .short("c")
+                .long("config")
+                .takes_value(true)
+                .help("Use a different config file"),
+        )
+        .get_matches();
+
+    let print: bool = matches.is_present("print");
+    match get_config_path(&matches) {
+        Some(config_file) => {
+            let cfg: Configuration = confy::load_path(config_file).unwrap();
+            let target = matches.value_of("name").unwrap();
+            if let Some(result) = cfg.config.iter().find(|x| &x.name == target) {
+                if print {
+                    println!("{}", &result.path);
+                } else {
+                    let expanded = tilde(&result.path).into_owned();
+                    if !Path::new(&expanded).exists()
+                        && (result.default_path != "/dev/null" || result.default_path != "")
+                    {
+                        match std::fs::copy(&result.default_path, &expanded) {
+                            Ok(_) => {}
+                            Err(_) => {}
+                        }
+                    }
+                    std::process::Command::new(&cfg.editor)
+                        .arg(&expanded)
+                        .status()
+                        .expect("error");
                 }
             }
-            std::process::Command::new(&cfg.editor)
-                .arg(config_file)
-                .status()
-                .expect("error");
         }
-        None => println!(
-            "config not found for '{}' in ~/.config/rconf/rconf.toml",
-            target
-        ),
+        None => {
+            println!("Error: Could not find a location to store configuration");
+        }
     }
+    Ok(())
 }
