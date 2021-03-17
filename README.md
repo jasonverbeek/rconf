@@ -1,10 +1,10 @@
-# rconf v1.1.1
+# rconf v2.0.0
 
 Helper for modifying system configs by mapping a name/key to the config path.
 
 Can also use default/example configs when the original config file doesn't exist yet.
 
-## Example
+## Examples
 ```~ > rconf nvim```
 
 Will open the nvim config file in the configured editor (vim by default).
@@ -13,13 +13,25 @@ And the following will open the rconf config using rconf for ease of use in cros
 
 `~ > rconf rconf`
 
+Specifying a config file
+
+`~ > rconf --config /path/to/config.toml rconf`
+
+Only printing the path
+
+`~ > rconf --print rconf`
+
+Show help
+
+`~ > rconf --help`
+
 ## Installation
 
 ### Archlinux
 
 You can install rconf using your preferred AUR Helper
 
-`~ > paru -S rconf`
+`~ > paru -S rconf` (latest tag)
 
 ### Other Distros
 
@@ -56,23 +68,34 @@ Default location for configs:
 
 GNU/Linux `~/.config/rconf/rconf.toml`
 
-MacOS `~/Library/Preferences/rs.rconf/rconf.toml`  (**Will change in the future, see [change log v1.1.1](#v111)**)
+MacOS `~/Library/Application Support/rs.rconf/rconf.toml`
 
-Windows `%AppData%` somewhere **(untested)**
+Windows `%AppData%\rconf\config\rconf.toml`
 
 ## Change log
 
-### v1.0.0
-- Basic functionality to map config files
-- initial version
+### v2.0.0
+- move to directories-next instead of waiting on confy 0.5.0
+- add cli parsing
+- support `--print` to print path instead of edit the file
+- support `--config` to use a different config file
+- **NOTE:** to upgrade to 2.0.0 from macOS you need to move your config file
+    - Old: ~/Library/Preferences/rs.rconf/rconf.toml
+    - New: ~/Library/Application Support/rs.rconf/rconf.toml
+    - `mv ~/Library/Preferences/rs.rconf ~/Library/Application Support/`
+
+### v1.1.1
+- fix for MacOS config path until confy 0.5.0 is out.
+- **NOTE:** in version rconf v2.0.0 you will need to move your config on MacOS
+    - Old: ~/Library/Preferences/rs.rconf/rconf.toml
+    - New: ~/Library/Application Support/rs.rconf/rconf.toml
+    - `mv ~/Library/Preferences/rs.rconf ~/Library/Application Support/`
 
 ### v1.1.0
 - error messages and example config based on OS
 - include rconf itself in the example config so you can run `~ > rconf rconf` to edit the config
 
-## v1.1.1
-- fix for MacOS config path until confy 0.5.0 is out.
-- **NOTE:** in version rconf v2.0.0(_not yet released_) you will need to move your config on MacOS
-    - Old: ~/Library/Preferences/rs.rconf/rconf.toml
-    - New: ~/Library/Application Support/rs.rconf/rconf.toml
-    - `mv ~/Library/Preferences/rs.rconf ~/Library/Application Support/`
+### v1.0.0
+- Basic functionality to map config files
+- initial version
+
